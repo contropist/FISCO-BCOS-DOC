@@ -6,7 +6,7 @@
 
 ```eval_rst
 .. important::
-    - ``控制台`` 只支持FISCO BCOS 3.0+版本，基于 `Java SDK <../sdk/java_sdk/index.html>`_ 实现。
+    - ``控制台`` 只支持FISCO BCOS 3.x版本，基于 `Java SDK <../sdk/java_sdk/index.html>`_ 实现。
     - 可通过命令 ``./start.sh --version`` 查看当前控制台版本
 ```
 
@@ -61,36 +61,28 @@
 ```shell
 [group0]: /apps> help
 * help([-h, -help, --h, --H, --help, -H, h])  Provide help information
-* addObserver                               Add an observer node
-* addSealer                                 Add a sealer node
-* call                                      Call a contract by a function and parameters
-* cd                                        Change dir to given path.
+---------------------------Basic Command----------------------------
 * clearNodeName                             Clear default node name to empty.
-* create                                    Create table by sql
-* deploy                                    Deploy a contract on blockchain
-* desc                                      Description table information
 * quit([quit, q, exit])                     Quit console
+* getNodeName                               Get default node name in this client.
+* switch([s])                               Switch to a specific group by name
+* setNodeName                               Set default node name to send request.
+---------------------------Contract Operation----------------------------
+* call                                      Call a contract by a function and parameters
+* deploy                                    Deploy a contract on blockchain
+* getCode                                   Query code at a given address
+* getDeployLog                              Query the log of deployed contracts
+* listAbi                                   List functions and events info of the contract.
+* listDeployContractAddress                 List the contractAddress for the specified contract
+---------------------------Blockchain Status Query----------------------------
 * getBlockByHash                            Query information about a block by hash
 * getBlockByNumber                          Query information about a block by number
 * getBlockHashByNumber                      Query block hash by block number.
 * getBlockHeaderByHash                      Query information about a block header by hash
 * getBlockHeaderByNumber                    Query information about a block header by block number
 * getBlockNumber                            Query the number of most recent block
-* getCode                                   Query code at a given address
-* getConsensusStatus                        Query consensus status
-* getCurrentAccount                         Get the current account info
-* getDeployLog                              Query the log of deployed contracts
-* getGroupInfo                              Query the current group information.
-* getGroupInfoList                          Get all groups info
-* getGroupList                              List all group list
-* getGroupNodeInfo                          Get group node info
-* getGroupPeers                             List all group peers
-* getNodeName                               Get default node name in this client.
-* getObserverList                           Query nodeId list for observer nodes.
-* getPbftView                               Query the pbft view of node
 * getPeers                                  Query peers currently connected to the client
 * getPendingTxSize                          Query pending transactions size
-* getSealerList                             Query nodeId list for sealer nodes
 * getSyncStatus                             Query sync status
 * getSystemConfigByKey                      Query a system config value by key
 * getTotalTransactionCount                  Query total transaction count
@@ -98,21 +90,42 @@
 * getTransactionByHashWithProof             Query the transaction and transaction proof by transaction hash
 * getTransactionReceipt                     Query the receipt of a transaction by transaction hash
 * getTransactionReceiptByHashWithProof      Query the receipt and transaction receipt proof by transaction hash
-* listAbi                                   List functions and events info of the contract.
-* listAccount                               List the current saved account list
-* listDeployContractAddress                 List the contractAddress for the specified contract
+* setSystemConfigByKey                      Set a system config value by key
+---------------------------Consensus Operation----------------------------
+* addObserver                               Add an observer node
+* addSealer                                 Add a sealer node
+* getConsensusStatus                        Query consensus status
+* getObserverList                           Query nodeId list for observer nodes.
+* getPbftView                               Query the pbft view of node
+* getSealerList                             Query nodeId list for sealer nodes
+* removeNode                                Remove a node
+* setConsensusWeight                        Set consensus weight for the specified node
+---------------------------BFS Operation----------------------------
+* cd                                        Change dir to given path.
 * ln                                        Create a link to access contract.
-* loadAccount                               Load account for the transaction signature
 * ls                                        List resources in given path.
 * mkdir                                     Create dir in given path.
-* newAccount                                Create account
 * pwd                                       Show absolute path of working directory name
-* removeNode                                Remove a node
-* switch([s])                               Switch to a specific group by name
-* setConsensusWeight                        Set consensus weight for the specified node
-* setNodeName                               Set default node name to send request.
-* setSystemConfigByKey                      Set a system config value by key
 * tree                                      List contents of directories in a tree-like format.
+---------------------------CRUD Contract Operation----------------------------
+* alter                                     Alter table columns by sql
+* create                                    Create table by sql
+* delete                                    Remove records by sql
+* desc                                      Description table information
+* insert                                    Insert records by sql
+* select                                    Select records by sql
+* update                                    Update records by sql
+---------------------------Group Info Query----------------------------
+* getGroupInfo                              Query the current group information.
+* getGroupInfoList                          Get all groups info
+* getGroupList                              List all group list
+* getGroupNodeInfo                          Get group node info
+* getGroupPeers                             List all group peers
+---------------------------Account Operation----------------------------
+* getCurrentAccount                         Get the current account info
+* listAccount                               List the current saved account list
+* loadAccount                               Load account for the transaction signature
+* newAccount                                Create account
 ---------------------------------------------------------------------------------------------
 ```
 
@@ -157,22 +170,22 @@ quit
 
 **新增Liquid部署方式**：当连接节点在配置开启 “is_wasm=true”选项时，可自动启动控制台使用，具体配置项请参考：[节点配置](../../tutorial/air/config.md)
 
-Solidity部署参数：
+**Solidity部署参数：**
 
 - 合约路径：合约文件的路径，支持相对路径、绝对路径和默认路径三种方式。用户输入为文件名时，从默认目录获取文件，默认目录为: `contracts/solidity`，比如：HelloWorld。
 - 开启静态分析：可选项，默认为关闭。若开启，则会开启静态分析并行字段冲突域，加速合约并行执行速度。静态分析需要耗时较久，请耐心等待一段时间。
 
 ```shell
 # 部署HelloWorld合约，默认路径
-[group0]: /apps>  deploy HelloWorld
+[group0]: /apps> deploy HelloWorld
 contract address:0xc0ce097a5757e2b6e189aa70c7d55770ace47767
 
 # 部署HelloWorld合约，相对路径
-[group0]: /apps>  deploy contracts/solidity/HelloWorld.sol
+[group0]: /apps> deploy contracts/solidity/HelloWorld.sol
 contract address:0x4721D1A77e0E76851D460073E64Ea06d9C104194
 
 # 部署HelloWorld合约，绝对路径
-[group0]: /apps>  deploy ~/fisco/console/contracts/solidity/HelloWorld.sol
+[group0]: /apps> deploy ~/fisco/console/contracts/solidity/HelloWorld.sol
 contract address:0x85517d3070309a89357c829e4b9e2d23ee01d881
 
 # 开启静态分析选项
@@ -188,17 +201,32 @@ contract address: 0x0102e8B6fC8cdF9626fDdC1C3Ea8C1E79b3FCE94
 
 **Liquid部署参数：**
 
-- wasm二进制文件路径：cargo-liquid编译过后的wasm文件，支持绝对路径、相对路径
-- ABI文件路径：编译过后的ABI文件，支持绝对路径、相对路径
+- 二进制文件所在文件夹路径：cargo-liquid编译过后的wasm文件，以及ABI文件，均需要放在同一个路径下，支持绝对路径、相对路径
 - 部署BFS路径：BFS文件系统中的路径名
 - 部署构造参数：部署时所需要的构造参数
 
 ```shell
 # 部署HelloWorld合约，相对路径
-[group0]: /apps> deploy asset/asset.wasm asset/asset.abi asset_test
+[group0]: /apps> deploy asset asset_test
 transaction hash: 0x7498487dbf79378b5b50c4e36c09ea90842a343de307ee66d560d005d3c40ccb
 contract address: /asset_test
 currentAccount: 0x52d8001791a646d7e0d63e164731b8b7509c8bda
+```
+
+**deploy with BFS:**
+
+支持在部署合约时在BFS创建别名, 使用参数 `-l` 将HelloWorld部署后的地址link到/apps/hello/v1目录：
+
+```shell
+[group0]: /apps> deploy -l ./hello/v1 HelloWorld
+deploy contract with link, link path: /apps/hello/v1
+transaction hash: 0x1122b7933e3468d007eea4f49c7e5182083f59b739dc06e40ee621129fed04e8
+contract address: 0xcceef68c9b4811b32c75df284a1396c7c5509561
+currentAccount: 0x7c6bb210ac67412f38ff850330b2dcd294437498
+link path: /apps/hello/v1
+
+[group0]: /apps> ls ./hello/v1
+v1 -> cceef68c9b4811b32c75df284a1396c7c5509561
 ```
 
 ### 2. call
@@ -298,6 +326,27 @@ Event: {}
 
 ```
 
+**Call with BFS:**
+
+可以调用在BFS目录中创建的link文件，调用姿势和调用普通合约类似。
+
+```shell
+[group0]: /apps> call ./hello/v1 set "Hello, BFS."
+transaction hash: 0x0b39db7b23aebe78b50a5f45da0e94381a4f4495c7286ab3039f9a761a3cc655
+---------------------------------------------------------------------------------------------
+transaction status: 0
+description: transaction executed successfully
+---------------------------------------------------------------------------------------------
+Receipt message: Success
+Return message: Success
+Return value size:0
+Return types: ()
+Return values:()
+---------------------------------------------------------------------------------------------
+Event logs
+Event: {}
+```
+
 ### 3. getCode
 
 运行getCode，根据合约地址查询合约二进制代码。
@@ -317,23 +366,36 @@ Event: {}
 
 - 合约路径：合约文件的路径，支持相对路径、绝对路径和默认路径三种方式。用户输入为文件名时，从默认目录获取文件，默认目录为: `contracts/solidity`，比如：TableTest。
 - 合约名：(可选)合约名称，默认情况下使用合约文件名作为合约名参数
+- 合约地址：(可选)在部署后的合约地址，listAbi会向节点发起getAbi的请求
 
 ```shell
-[group0]: /apps> listAbi KVTableTest
+[group0]: /apps> listAbi TableTest
 Method list:
  name                |    constant  |    methodId    |    signature
   --------------------------------------------------------------
- createTable         |    false     |    56004b6a    |    createTable(string,string,string)
- set                 |    false     |    da465d74    |    set(string,string,string)
- get                 |    true      |    693ec85e    |    get(string)
+ createTable         |    false     |    6a5bae4e    |    createTable(string,string,string[])
+ remove              |    false     |    80599e4b    |    remove(string)
+ select              |    true      |    fcd7e3c1    |    select(string)
+ update              |    false     |    31c3e456    |    update(string,string,string)
+ insert              |    false     |    2fe99bdc    |    insert(string,string,string)
+ desc                |    true      |    55f150f1    |    desc()
 
 Event list:
  name                |   topic                                                                   signature
   --------------------------------------------------------------
- remove              |   0x0fe1160f9655e87c29e76aca1cab34fb2a644d375da7a900c7076bad17cad26b  |   remove(string,int256)
- update              |   0x49cc36b56a9320d20b2d9a1938a972c849191bceb97500bfd38fa8a590dac73a  |   update(string,int256,string)
- select              |   0x5b325d7821528d3b52d0cc7a83e1ecef0438f763796770201020ac8b8813ac0a  |   select(string)
- insert              |   0xe020d464e502c11b54a7e37e568c78f0fcd360213eb5f4ac0a25a17733fc19f7  |   insert(string,int256,string)
+ InsertResult        |   0xc57b01fa77f41df77eaab79a0e2623fab2e7ae3e9530d9b1cab225ad65f2b7ce  |   InsertResult(int256)
+ CreateResult        |   0xb5636cd912a73dcdb5b570dbe331dfa3e6435c93e029e642def2c8e40dacf210  |   CreateResult(int256)
+ RemoveResult        |   0x4b930e280fe29620bdff00c88155d46d6d82a39f45dd5c3ea114dc3157358112  |   RemoveResult(int256)
+ UpdateResult        |   0x8e5890af40fc24a059396aca2f83d6ce41fcef086876548fa4fb8ec27e9d292a  |   UpdateResult(int256)
+
+# 使用地址参数
+[group0]: /apps> listAbi cceef68c9b4811b32c75df284a1396c7c5509561
+Method list:
+ name                |    constant  |    methodId    |    signature
+  --------------------------------------------------------------
+ set                 |    false     |    4ed3885e    |    set(string)
+ get                 |    true      |    6d4ce63c    |    get()
+
 ```
 
 ### 5. getDeployLog
@@ -579,7 +641,6 @@ PeersInfo{
 }
 ```
 
-
 ### 5. getBlockByNumber
 
 运行getBlockByNumber，根据区块高度查询区块信息。
@@ -763,7 +824,7 @@ PeersInfo{
 运行setSystemConfigByKey，以键值对方式设置系统参数。目前设置的系统参数支持`tx_count_limit`,`consensus_leader_period`。这些系统参数的键名可以通过tab键补全：
 
 - `tx_count_limit`: 区块最大打包交易数
-- `consensus_leader_period`: 交易执行允许消耗的最大gas数
+- `consensus_leader_period`: 共识选主间隔
 - `gas_limit`: 交易执行的gas限制
 - `compatibility_version`: 数据兼容版本号，当区块链所有二进制均升级到最新版本后，可通过`setSystemConfigByKey`升级数据兼容版本号到最新
 
@@ -994,7 +1055,7 @@ Alter 't_demo' Ok.
 
 运行desc语句查询表的字段信息，使用mysql语句形式。
 
-```
+```shell
 # 查询t_demo表的字段信息，可以查看表的主键名和其他字段名
 [group0]: /apps> desc t_demo
 {
@@ -1087,7 +1148,7 @@ Update OK, 1 row affected.
 运行delete sql语句删除记录，使用mysql语句形式。
 
 ```text
-[group:1]> delete from t_demo where name = fruit and item_id = 1
+[group:1]> delete from t_demo where name = fruit
 Remove OK, 1 row affected.
 ```
 
@@ -1155,6 +1216,10 @@ test
 
 与Linux的ln命令相似，创建某个合约资源的链接，可以通过直接调用链接发起对实际合约的调用。
 
+与2.0版本的CNS服务类似，依靠BFS多层级目录，可以建立合约名与合约地址、合约版本号的映射关系。
+
+例如，合约名为Hello，合约版本号为latest，可以在`/apps`目录下建立`/apps/Hello/latest` 的软连接，软连接对应的合约地址可覆盖写。同理，用户可以在 `/apps/Hello` 下建立多个版本，例如：`/apps/Hello/newOne`、`/apps/Hello/layerTwo`等等。
+
 ```bash
 # 创建合约软链接，合约名为Hello，合约版本为latest
 [group0]: /apps> ln Hello/latest 0x19a6434154de51c7a7406edF312F01527441B561
@@ -1201,22 +1266,25 @@ latest -> 2b5dcbae97f9d9178e8b051b08c9fb4089bae71b
 [group0]: /apps> tree ..
 /
 ├─apps
-│ └─Hello
-│   └─latest
 ├─sys
+│ ├─account_manager
 │ ├─auth
 │ ├─bfs
+│ ├─cast_tools
 │ ├─consensus
 │ ├─crypto_tools
+│ ├─dag_test
+│ ├─discrete_zkp
+│ ├─group_sig
 │ ├─kv_storage
-│ ├─parallel_config
+│ ├─ring_sig
 │ ├─status
+│ ├─table_manager
 │ └─table_storage
 ├─tables
-│ └─person
 └─usr
 
-5 directory, 10 contracts.
+4 directory, 14 contracts.
 
 # 使用深度为1
 [group0]: /apps> tree .. 1
@@ -1244,10 +1312,11 @@ latest -> 2b5dcbae97f9d9178e8b051b08c9fb4089bae71b
 
 ```shell
 [group0]: /apps> getGroupPeers 
-peer0: 44c3c0d914d7a3818923f9f45927724bddeeb25df92b93f1242c32b63f726935d6742b51cd40d2c828b52ed6cde94f4d6fb4b3bfdc0689cfcddf7425eafdae85
-peer1: bb21228b0762433ea6e4cb185e1c54aeb83cd964ec0e831f8732cb2522795bb569d58215dfbeb7d3fc474fdce33dc9a793d4f0e86ce69834eddc707b48915824
-peer2: c1de42fc9e6798142fdbeddc05018b548b848155a8527f0ffc75eb93d0ae51ebd8074c86b6bdc0f4161dcad7cab9455a4eebf146ac5b08cb23c33c8eef756b7c
-peer3: f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366
+peer0: 07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a
+peer1: 0ba87f0f2a218c70d207d5df01f74c9b5799bc0853af27f599422a5a0e8224d0ffe12d6aa0765b90487bfcfb9562e01dd98af6693ab54976d305b372b40e460c
+peer2: 1fa15731ae79ac7a9c6affa5511b50b1d549e28906f1968db8ddce69e18601707803c032afc42a230b74d4579a1bcca04b2e848019e5b1215b7cab96d59fab5a
+peer3: bad149badf702520cdf3d0a72a4790c2cd68bc23f9e2dd9b796b46ac9da78c98b089720981d987a546d3b3355406d0b428767a18916459c2cbade04432d80627
+peer4: d177c9ce82f3ae1aa02a37544d52496afa8c102cf08c2b8b3b9822874c15188863d052cad4c3f78abff0510a6c1bc04892129c183ec53baffeff8c5a000f069a
 ```
 
 ### 2. getGroupInfo
@@ -1262,23 +1331,23 @@ peer3: f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e
     "genesisConfig":{
         "consensusType":"pbft",
         "blockTxCountLimit":1000,
-        "txGasLimit":300000000,
+        "txGasLimit":3000000000,
         "consensusLeaderPeriod":1,
         "sealerList":[
             {
-                "nodeID":"44c3c0d914d7a3818923f9f45927724bddeeb25df92b93f1242c32b63f726935d6742b51cd40d2c828b52ed6cde94f4d6fb4b3bfdc0689cfcddf7425eafdae85",
+                "nodeID":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
                 "weight":1
             },
             {
-                "nodeID":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
+                "nodeID":"0ba87f0f2a218c70d207d5df01f74c9b5799bc0853af27f599422a5a0e8224d0ffe12d6aa0765b90487bfcfb9562e01dd98af6693ab54976d305b372b40e460c",
                 "weight":1
             },
             {
-                "nodeID":"c1de42fc9e6798142fdbeddc05018b548b848155a8527f0ffc75eb93d0ae51ebd8074c86b6bdc0f4161dcad7cab9455a4eebf146ac5b08cb23c33c8eef756b7c",
+                "nodeID":"bad149badf702520cdf3d0a72a4790c2cd68bc23f9e2dd9b796b46ac9da78c98b089720981d987a546d3b3355406d0b428767a18916459c2cbade04432d80627",
                 "weight":1
             },
             {
-                "nodeID":"bb21228b0762433ea6e4cb185e1c54aeb83cd964ec0e831f8732cb2522795bb569d58215dfbeb7d3fc474fdce33dc9a793d4f0e86ce69834eddc707b48915824",
+                "nodeID":"d177c9ce82f3ae1aa02a37544d52496afa8c102cf08c2b8b3b9822874c15188863d052cad4c3f78abff0510a6c1bc04892129c183ec53baffeff8c5a000f069a",
                 "weight":1
             }
         ]
@@ -1288,22 +1357,59 @@ peer3: f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e
             "type":0,
             "iniConfig":{
                 "binaryInfo":{
-                    "version":"3.0.0-rc1",
-                    "gitCommitHash":"92ac16b4d2da511cbba33031e58369cac240547a",
-                    "platform":"Darwin/appleclang",
-                    "buildTime":"20211203 10:43:32"
+                    "version":"3.0.0",
+                    "gitCommitHash":"77bcb55ed21e75b68f04e1443db27425e0e5f142",
+                    "platform":"Linux/g++",
+                    "buildTime":"20220815 17:44:59"
                 },
                 "chainID":"chain0",
                 "groupID":"group0",
                 "smCryptoType":false,
-                "nodeID":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
-                "nodeName":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
+                "isSerialExecute":false,
+                "nodeID":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
+                "nodeName":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
                 "rpcServiceName":"",
                 "gatewayServiceName":"",
-                "isWasm":false
+                "authCheck":false,
+                "isWasm":false,
+                "isAuthCheck":false
             },
-            "name":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
-            "serviceInfoList":null
+            "name":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
+            "serviceInfoList":null,
+            "protocol":{
+                "compatibilityVersion":50331648,
+                "minSupportedVersion":0,
+                "maxSupportedVersion":1
+            }
+        },
+        {
+            "type":0,
+            "iniConfig":{
+                "binaryInfo":{
+                    "version":"3.0.0",
+                    "gitCommitHash":"77bcb55ed21e75b68f04e1443db27425e0e5f142",
+                    "platform":"Linux/g++",
+                    "buildTime":"20220815 17:44:59"
+                },
+                "chainID":"chain0",
+                "groupID":"group0",
+                "smCryptoType":false,
+                "isSerialExecute":false,
+                "nodeID":"0ba87f0f2a218c70d207d5df01f74c9b5799bc0853af27f599422a5a0e8224d0ffe12d6aa0765b90487bfcfb9562e01dd98af6693ab54976d305b372b40e460c",
+                "nodeName":"0ba87f0f2a218c70d207d5df01f74c9b5799bc0853af27f599422a5a0e8224d0ffe12d6aa0765b90487bfcfb9562e01dd98af6693ab54976d305b372b40e460c",
+                "rpcServiceName":"",
+                "gatewayServiceName":"",
+                "authCheck":false,
+                "isWasm":false,
+                "isAuthCheck":false
+            },
+            "name":"0ba87f0f2a218c70d207d5df01f74c9b5799bc0853af27f599422a5a0e8224d0ffe12d6aa0765b90487bfcfb9562e01dd98af6693ab54976d305b372b40e460c",
+            "serviceInfoList":null,
+            "protocol":{
+                "compatibilityVersion":50331648,
+                "minSupportedVersion":0,
+                "maxSupportedVersion":1
+            }
         }
     ]
 }
@@ -1315,7 +1421,9 @@ peer3: f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e
 
 ```shell
 [group0]: /apps> getGroupList
-group0: group
+[
+    group0
+]
 ```
 
 ### 4. getGroupInfoList
@@ -1331,23 +1439,23 @@ group0: group
         "genesisConfig":{
             "consensusType":"pbft",
             "blockTxCountLimit":1000,
-            "txGasLimit":300000000,
+            "txGasLimit":3000000000,
             "consensusLeaderPeriod":1,
             "sealerList":[
                 {
-                    "nodeID":"44c3c0d914d7a3818923f9f45927724bddeeb25df92b93f1242c32b63f726935d6742b51cd40d2c828b52ed6cde94f4d6fb4b3bfdc0689cfcddf7425eafdae85",
+                    "nodeID":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
                     "weight":1
                 },
                 {
-                    "nodeID":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
+                    "nodeID":"0ba87f0f2a218c70d207d5df01f74c9b5799bc0853af27f599422a5a0e8224d0ffe12d6aa0765b90487bfcfb9562e01dd98af6693ab54976d305b372b40e460c",
                     "weight":1
                 },
                 {
-                    "nodeID":"c1de42fc9e6798142fdbeddc05018b548b848155a8527f0ffc75eb93d0ae51ebd8074c86b6bdc0f4161dcad7cab9455a4eebf146ac5b08cb23c33c8eef756b7c",
+                    "nodeID":"bad149badf702520cdf3d0a72a4790c2cd68bc23f9e2dd9b796b46ac9da78c98b089720981d987a546d3b3355406d0b428767a18916459c2cbade04432d80627",
                     "weight":1
                 },
                 {
-                    "nodeID":"bb21228b0762433ea6e4cb185e1c54aeb83cd964ec0e831f8732cb2522795bb569d58215dfbeb7d3fc474fdce33dc9a793d4f0e86ce69834eddc707b48915824",
+                    "nodeID":"d177c9ce82f3ae1aa02a37544d52496afa8c102cf08c2b8b3b9822874c15188863d052cad4c3f78abff0510a6c1bc04892129c183ec53baffeff8c5a000f069a",
                     "weight":1
                 }
             ]
@@ -1357,22 +1465,30 @@ group0: group
                 "type":0,
                 "iniConfig":{
                     "binaryInfo":{
-                        "version":"3.0.0-rc1",
-                        "gitCommitHash":"92ac16b4d2da511cbba33031e58369cac240547a",
-                        "platform":"Darwin/appleclang",
-                        "buildTime":"20211203 10:43:32"
+                        "version":"3.0.0",
+                        "gitCommitHash":"77bcb55ed21e75b68f04e1443db27425e0e5f142",
+                        "platform":"Linux/g++",
+                        "buildTime":"20220815 17:44:59"
                     },
                     "chainID":"chain0",
-                    "groupID":"group",
+                    "groupID":"group0",
                     "smCryptoType":false,
-                    "nodeID":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
-                    "nodeName":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
+                    "isSerialExecute":false,
+                    "nodeID":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
+                    "nodeName":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
                     "rpcServiceName":"",
                     "gatewayServiceName":"",
-                    "isWasm":false
+                    "authCheck":false,
+                    "isWasm":false,
+                    "isAuthCheck":false
                 },
-                "name":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
-                "serviceInfoList":null
+                "name":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
+                "serviceInfoList":null,
+                "protocol":{
+                    "compatibilityVersion":50331648,
+                    "minSupportedVersion":0,
+                    "maxSupportedVersion":1
+                }
             }
         ]
     }
@@ -1384,27 +1500,35 @@ group0: group
 运行getGroupNodeInfo命令，获取当前群组内某一个节点的信息：
 
 ```shell
-[group0]: /apps> getGroupNodeInfo f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366
+[group0]: /apps> getGroupNodeInfo 07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a
 {
     "type":0,
     "iniConfig":{
         "binaryInfo":{
-            "version":"3.0.0-rc1",
-            "gitCommitHash":"92ac16b4d2da511cbba33031e58369cac240547a",
-            "platform":"Darwin/appleclang",
-            "buildTime":"20211203 10:43:32"
+            "version":"3.0.0",
+            "gitCommitHash":"77bcb55ed21e75b68f04e1443db27425e0e5f142",
+            "platform":"Linux/g++",
+            "buildTime":"20220815 17:44:59"
         },
         "chainID":"chain0",
         "groupID":"group0",
         "smCryptoType":false,
-        "nodeID":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
-        "nodeName":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
+        "isSerialExecute":false,
+        "nodeID":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
+        "nodeName":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
         "rpcServiceName":"",
         "gatewayServiceName":"",
-        "isWasm":false
+        "authCheck":false,
+        "isWasm":false,
+        "isAuthCheck":false
     },
-    "name":"f39b21b4832976591085b73a8550442e76dc2ae657adb799ff123001a553be60293b1059e97c472e49bb02b71384f05501f149905015707a2fe08979742c1366",
-    "serviceInfoList":null
+    "name":"07844e249ca404fd54ac9f430cbc0dde9c23ca28e872f1d1bafd974aae6149bc3d0442a4b278873830c0f0642cbde3fda4884cec508b1bc64c56ad23f4256d0a",
+    "serviceInfoList":null,
+    "protocol":{
+        "compatibilityVersion":50331648,
+        "minSupportedVersion":0,
+        "maxSupportedVersion":1
+    }
 }
 ```
 
@@ -1917,8 +2041,6 @@ Against Voters:
 2000
 ```
 
-
-
 #### 2.12. upgradeVoteProposal
 
 发起升级投票计算逻辑的提案。升级提案投票计算逻辑分为以下几步：
@@ -2152,7 +2274,89 @@ Against Voters:
 
 ```
 
+#### 2.15. freezeAccount/unfreezeAccount
 
+冻结、解冻账户，冻结的账户不可以发起任何**写**交易，可通过unfreezeAccount解冻。
+该命令只有治理委员才可以调用。
+
+```shell
+# 冻结账户0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+[group0]: /apps> freezeAccount 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+{
+    "code":0,
+    "msg":"Success"
+}
+
+# 加载到已经冻结的账户 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+[group0]: /apps> loadAccount 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+Load account 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22 success!
+
+# 部署调用都被拒绝
+[group0]: /apps> deploy HelloWorld
+deploy contract for HelloWorld failed!
+return message: Account is frozen.
+return code:22
+Return values:null
+
+[group0]: /apps> call HelloWorld 0xc8ead4b26b2c6ac14c9fd90d9684c9bc2cc40085 set test
+transaction hash: 0x8844e61177f25cfafa9974525d6b8cb71f9ff2ec86cb40244018097bce8999bd
+---------------------------------------------------------------------------------------------
+transaction status: 22
+---------------------------------------------------------------------------------------------
+Receipt message: Account is frozen.
+Return message: Account is frozen.
+---------------------------------------------------------------------------------------------
+
+# 解冻账户0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+[group0]: /apps> unfreezeAccount 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+{
+    "code":0,
+    "msg":"Success"
+}
+
+# 加载账户0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+[group0]: /apps> loadAccount 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+Load account 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22 success!
+
+[group0]: /apps> deploy HelloWorld
+transaction hash: 0xd978585392114e2379be8c94250f5abceaf84538567d737db7dfbafcc0b7399c
+contract address: 0xd24180cc0fef2f3e545de4f9aafc09345cd08903
+currentAccount: 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+```
+
+#### 2.16. abolishAccount
+
+废止账户，废止的账户不可以发起任何**写**交易，且不可恢复。
+该命令只有治理委员才可以调用。
+
+```shell
+# 废止账户0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+[group0]: /apps> abolishAccount 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+{
+    "code":0,
+    "msg":"Success"
+}
+
+# 加载账户0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+[group0]: /apps> loadAccount 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22
+Load account 0x3d20a4e26f41b57c2061e520c825fbfa5f321f22 success!
+
+# 部署和调用都被拒绝
+[group0]: /apps> deploy HelloWorld
+deploy contract for HelloWorld failed!
+return message: Account is abolished.
+return code:23
+Return values:null
+
+[group0]: /apps> call HelloWorld 0xd24180cc0fef2f3e545de4f9aafc09345cd08903 set test
+transaction hash: 0xccfaffed1a329fdaaee8f23906be15bc64eadc9b1f47ba1fd25faf7e3fb572c4
+---------------------------------------------------------------------------------------------
+transaction status: 23
+---------------------------------------------------------------------------------------------
+Receipt message: Account is abolished.
+Return message: Account is abolished.
+---------------------------------------------------------------------------------------------
+```
 
 ### 3. 合约管理员专用命令
 
